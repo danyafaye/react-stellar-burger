@@ -28,7 +28,8 @@
       "@hooks/*": ["src/hooks/*"],
       "@pages/*": ["src/pages/*"],
       "@services/*": ["src/services/*"],
-      "@utils/*": ["src/utils/*"]
+      "@utils/*": ["src/utils/*"],
+      "@images/*": ["src/images/*"]
     },
 
     /* Linting */
@@ -40,5 +41,5 @@
     "noUncheckedSideEffectImports": true
   },
   "include": ["src"],
-  "exclude": ["cypress"],
+  "exclude": ["cypress"]
 }

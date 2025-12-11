@@ -1,0 +1,26 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 520px;
+  margin: 0 auto;
+}
+
+.info_container {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(max-content, 1fr));
+  gap: 20px;
+  width: 100%;
+}
+
+.info_block {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  color: var(--text-inactive-color);
+}
+
+.info_text {
+  text-align: center;
+}
