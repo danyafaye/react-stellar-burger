@@ -3,6 +3,7 @@ import { useState, type FC, useMemo, useRef, useEffect, useCallback } from 'reac
 
 import IngredientDetails from '@components/ingredient-details/ingredient-details.tsx';
 import IngredientItem from '@components/ingredient-item/ingredient-item.tsx';
+import { Modal } from '@components/modal/modal.tsx';
 
 import type { TIngredient } from '@utils/types.ts';
 
@@ -164,10 +165,9 @@ export const BurgerIngredients: FC<BurgerIngredientsProps> = ({
   return (
     <section className={styles.burger_ingredients}>
       {ingredientInfo && (
-        <IngredientDetails
-          ingredient={ingredientInfo}
-          onClose={onCloseIngredientDetails}
-        />
+        <Modal onClose={onCloseIngredientDetails} title="Детали ингредиента">
+          <IngredientDetails ingredient={ingredientInfo} />
+        </Modal>
       )}
       <nav>
         <ul className={styles.menu}>

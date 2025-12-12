@@ -4,8 +4,9 @@ import {
   CurrencyIcon,
   DragIcon,
 } from '@krgaa/react-developer-burger-ui-components';
-import { useCallback, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 
+import { Modal } from '@components/modal/modal.tsx';
 import OrderDetails from '@components/order-details/order-details.tsx';
 
 import type { TIngredient } from '@utils/types.ts';
@@ -26,34 +27,21 @@ export const BurgerConstructor: FC<BurgerConstructorProps> = ({ order }) => {
     }, 0);
   }, [order]);
 
-  const getConstructorType = useCallback(
-    (index: number) => {
-      if (index === 0) {
-        return 'top';
-      }
-      if (index === order?.length - 1) {
-        return 'bottom';
-      }
-      return undefined;
-    },
-    [order?.length]
-  );
+  const lastOrderIndex = useMemo(() => {
+    return order?.length - 1;
+  }, [order?.length]);
 
-  const renderConstructor = useMemo(() => {
+  const renderConstructorItems = useMemo(() => {
     return order?.map((item, index) => {
-      const isLocked = item?.type === 'bun';
-      const constructorType = getConstructorType(index);
       return (
-        <li key={item?._id} className={styles.constructor_item}>
-          {!isLocked && <DragIcon type="primary" />}
+        <div key={index} className={styles.constructor_item}>
+          <DragIcon type="primary" />
           <ConstructorElement
-            type={constructorType}
-            isLocked={isLocked}
             text={item?.name}
             thumbnail={item?.image_mobile}
             price={item?.price}
           />
-        </li>
+        </div>
       );
     });
   }, [order]);
@@ -64,8 +52,34 @@ export const BurgerConstructor: FC<BurgerConstructorProps> = ({ order }) => {
 
   return (
     <section className={styles.burger_constructor}>
-      {orderId && <OrderDetails orderId={orderId} onClose={closeOrderDetails} />}
-      <ul className={styles.constructor_wrapper}>{renderConstructor}</ul>
+      {orderId && (
+        <Modal onClose={closeOrderDetails}>
+          <OrderDetails orderId={orderId} />
+        </Modal>
+      )}
+      <ul className={styles.constructor_wrapper}>
+        <li className={`${styles.constructor_item} pr-5`}>
+          <ConstructorElement
+            type="top"
+            isLocked
+            text={`${order[0]?.name} (верх)`}
+            thumbnail={order[0]?.image_mobile}
+            price={order[0]?.price}
+          />
+        </li>
+        <li className={`${styles.overflow_constructor} pr-1`}>
+          {renderConstructorItems}
+        </li>
+        <li className={`${styles.constructor_item} pr-5`}>
+          <ConstructorElement
+            type="bottom"
+            isLocked
+            text={`${order[lastOrderIndex]?.name} (низ)`}
+            thumbnail={order[lastOrderIndex]?.image_mobile}
+            price={order[lastOrderIndex]?.price}
+          />
+        </li>
+      </ul>
       <div className={styles.constructor_order}>
         <div className={styles.constructor_price}>
           <span className="text text_type_digits-medium">{finalPrice}</span>

@@ -1,6 +1,7 @@
 import { CloseIcon } from '@krgaa/react-developer-burger-ui-components';
 import { type FC, type PropsWithChildren, useEffect } from 'react';
 
+import ModalOverlay from '@components/modal-overlay/modal-overlay.tsx';
 import { Portal } from '@components/portal/portal.tsx';
 
 import styles from './modal.module.css';
@@ -27,8 +28,7 @@ export const Modal: FC<ModalProps> = ({ onClose, title, children }) => {
   return (
     <Portal id="modal-root">
       <section className={styles.modal_container}>
-        {/*зачем это выносить в отдельную компоненту?*/}
-        <div className={styles.modal_overlay} onClick={onClose} />
+        <ModalOverlay onClose={onClose} />
         <div className={`${styles.modal} p-10 pb-15`}>
           <CloseIcon className={styles.close_icon} type="primary" onClick={onClose} />
 
