@@ -25,3 +25,9 @@
   height: 48px;
   text-align: center;
 }
+
+.dragging {
+  cursor: grabbing !important;
+  transform: rotate(5deg);
+  opacity: 0.5;
+}

@@ -6,7 +6,7 @@ import type { FC } from 'react';
 import styles from './order-details.module.css';
 
 type OrderDetailsProps = {
-  orderId: string;
+  orderId: number;
 };
 
 const OrderDetails: FC<OrderDetailsProps> = ({ orderId }) => {

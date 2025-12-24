@@ -1,30 +1,35 @@
 import { Preloader, Tab } from '@krgaa/react-developer-burger-ui-components';
-import { useState, type FC, useMemo, useRef, useEffect, useCallback } from 'react';
+import { useState, type FC, useMemo, useRef, useEffect } from 'react';
 
 import IngredientDetails from '@components/ingredient-details/ingredient-details.tsx';
 import IngredientItem from '@components/ingredient-item/ingredient-item.tsx';
 import { Modal } from '@components/modal/modal.tsx';
+import { useAppDispatch } from '@hooks/useAppDispatch.ts';
+import { useAppSelector } from '@hooks/useAppSelector.ts';
+import {
+  selectCurrentIngredient,
+  selectIngredients,
+  selectIngredientsLoading,
+} from '@services/ingredients/selectors.ts';
+import {
+  clearCurrentIngredient,
+  setCurrentIngredient,
+} from '@services/ingredients/slice.ts';
+import { selectIngredientCounts } from '@services/order/selectors.ts';
 
 import type { TIngredient } from '@utils/types.ts';
 
 import styles from './burger-ingredients.module.css';
 
-type BurgerIngredientsProps = {
-  ingredients: TIngredient[];
-  order: TIngredient[];
-  loading: boolean;
-};
-
 type IngredientType = 'bun' | 'sauce' | 'main';
 
-export const BurgerIngredients: FC<BurgerIngredientsProps> = ({
-  ingredients,
-  order,
-  loading,
-}) => {
+export const BurgerIngredients: FC = () => {
+  const dispatch = useAppDispatch();
   const [activeTab, setActiveTab] = useState<IngredientType>('bun');
-
-  const [ingredientInfo, setIngredientInfo] = useState<TIngredient | null>(null);
+  const ingredients = useAppSelector(selectIngredients);
+  const loading = useAppSelector(selectIngredientsLoading);
+  const ingredientCounts = useAppSelector(selectIngredientCounts);
+  const currentIngredient = useAppSelector(selectCurrentIngredient);
 
   const bunsRef = useRef<HTMLDivElement>(null);
   const saucesRef = useRef<HTMLDivElement>(null);
@@ -68,23 +73,13 @@ export const BurgerIngredients: FC<BurgerIngredientsProps> = ({
     return () => observer.disconnect();
   }, [loading, ingredients.length]);
 
-  const onOpenIngredientModals = (ingredient: TIngredient) => {
-    setIngredientInfo(ingredient);
+  const handleIngredientClick = (ingredient: TIngredient) => {
+    dispatch(setCurrentIngredient(ingredient));
   };
 
-  const onCloseIngredientDetails = () => {
-    setIngredientInfo(null);
+  const handleCloseModal = () => {
+    dispatch(clearCurrentIngredient());
   };
-
-  const getOrderCount = useCallback(
-    (itemId: string, isBun?: boolean) => {
-      if (isBun) {
-        return order.find((it) => it?._id === itemId) ? 1 : 0;
-      }
-      return order.filter((it) => it?._id === itemId).length;
-    },
-    [order]
-  );
 
   const renderBuns = useMemo(() => {
     return (
@@ -95,20 +90,20 @@ export const BurgerIngredients: FC<BurgerIngredientsProps> = ({
           {ingredients
             .filter((item) => item.type === 'bun')
             .map((item) => {
-              const count = getOrderCount(item._id, true);
+              const count = ingredientCounts[item._id] || 0;
               return (
                 <IngredientItem
                   key={item._id}
                   count={count}
                   ingredient={item}
-                  onClick={() => onOpenIngredientModals(item)}
+                  onClick={() => handleIngredientClick(item)}
                 />
               );
             })}
         </ul>
       </div>
     );
-  }, [ingredients, order]);
+  }, [ingredients, ingredientCounts]);
 
   const renderSauces = useMemo(() => {
     return (
@@ -119,20 +114,20 @@ export const BurgerIngredients: FC<BurgerIngredientsProps> = ({
           {ingredients
             .filter((item) => item.type === 'sauce')
             .map((item) => {
-              const count = getOrderCount(item._id);
+              const count = ingredientCounts[item._id] || 0;
               return (
                 <IngredientItem
                   key={item._id}
                   count={count}
                   ingredient={item}
-                  onClick={() => onOpenIngredientModals(item)}
+                  onClick={() => handleIngredientClick(item)}
                 />
               );
             })}
         </ul>
       </div>
     );
-  }, [ingredients, order]);
+  }, [ingredients, ingredientCounts]);
 
   const renderMain = useMemo(() => {
     return (
@@ -143,20 +138,20 @@ export const BurgerIngredients: FC<BurgerIngredientsProps> = ({
           {ingredients
             .filter((item) => item.type === 'main')
             .map((item) => {
-              const count = getOrderCount(item._id);
+              const count = ingredientCounts[item._id] || 0;
               return (
                 <IngredientItem
                   key={item._id}
                   count={count}
                   ingredient={item}
-                  onClick={() => onOpenIngredientModals(item)}
+                  onClick={() => handleIngredientClick(item)}
                 />
               );
             })}
         </ul>
       </div>
     );
-  }, [ingredients, order]);
+  }, [ingredients, ingredientCounts]);
 
   if (loading) {
     return <Preloader />;
@@ -164,9 +159,9 @@ export const BurgerIngredients: FC<BurgerIngredientsProps> = ({
 
   return (
     <section className={styles.burger_ingredients}>
-      {ingredientInfo && (
-        <Modal onClose={onCloseIngredientDetails} title="Детали ингредиента">
-          <IngredientDetails ingredient={ingredientInfo} />
+      {currentIngredient && (
+        <Modal onClose={handleCloseModal} title="Детали ингредиента">
+          <IngredientDetails />
         </Modal>
       )}
       <nav>

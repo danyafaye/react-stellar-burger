@@ -1,15 +1,17 @@
 import { Image } from '@components/image/image.tsx';
+import { useAppSelector } from '@hooks/useAppSelector.ts';
+import { selectCurrentIngredient } from '@services/ingredients/selectors.ts';
 
-import type { TIngredient } from '@utils/types.ts';
 import type { FC } from 'react';
 
 import styles from './ingredient-details.module.css';
 
-type IngredientDetailsProps = {
-  ingredient: TIngredient;
-};
+const IngredientDetails: FC = () => {
+  const ingredient = useAppSelector(selectCurrentIngredient);
 
-const IngredientDetails: FC<IngredientDetailsProps> = ({ ingredient }) => {
+  if (!ingredient) {
+    return null;
+  }
   return (
     <section className={styles.container}>
       <Image

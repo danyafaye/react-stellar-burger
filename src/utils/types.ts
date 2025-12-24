@@ -17,3 +17,15 @@ export type ResponseType<T> = {
   success: boolean;
   data: T[];
 };
+
+export type TOrder = {
+  name: string;
+  order: {
+    number: number;
+  };
+  success: boolean;
+};
+
+export type TCreateOrderRequest = {
+  ingredients: string[];
+};
