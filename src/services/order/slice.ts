@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice, nanoid } from '@reduxjs/toolkit';
 
-import { baseUrl } from '@utils/constants.ts';
+import { apiRequest, handleApiError } from '@services/rest.ts';
 
 import type { PayloadAction } from '@reduxjs/toolkit';
 import type { TCreateOrderRequest, TIngredient, TOrder } from '@utils/types.ts';
@@ -13,38 +13,12 @@ export const createOrder = createAsyncThunk(
   'order/createOrder',
   async (orderData: TCreateOrderRequest, { rejectWithValue }) => {
     try {
-      const response = await fetch(`${baseUrl}/orders`, {
+      return await apiRequest<TOrder>('/orders', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
         body: JSON.stringify(orderData),
       });
-
-      if (!response.ok) {
-        const errorMessage = `Ошибка ${response.status}: ${response.statusText}`;
-        return rejectWithValue(errorMessage);
-      }
-
-      const data = (await response.json()) as TOrder;
-
-      if (!data.success) {
-        return rejectWithValue('API вернул неуспешный ответ');
-      }
-
-      return data;
     } catch (error) {
-      if (error instanceof TypeError) {
-        return rejectWithValue('Ошибка сети: проверьте подключение к интернету');
-      }
-
-      if (error instanceof SyntaxError) {
-        return rejectWithValue('Ошибка парсинга данных от сервера');
-      }
-
-      const errorMessage =
-        error instanceof Error ? error.message : 'Произошла неизвестная ошибка';
-      return rejectWithValue(errorMessage);
+      return rejectWithValue(handleApiError(error));
     }
   }
 );
@@ -85,34 +59,53 @@ const calculateTotalPrice = (
   return bunPrice + ingredientsPrice;
 };
 
+export const addIngredientWithPrice = createAsyncThunk(
+  'order/addIngredientWithPrice',
+  (ingredient: TIngredient, { getState }) => {
+    const state = getState() as { order: OrderState };
+
+    let newBun = state.order.bun;
+    const newIngredients = [...state.order.ingredients];
+
+    if (ingredient.type === 'bun') {
+      newBun = ingredient;
+    } else {
+      const orderIngredient: TOrderIngredient = {
+        ...ingredient,
+        uniqueId: nanoid(),
+      };
+      newIngredients.push(orderIngredient);
+    }
+
+    const totalPrice = calculateTotalPrice(newBun, newIngredients);
+
+    return {
+      ingredient:
+        ingredient.type === 'bun' ? ingredient : { ...ingredient, uniqueId: nanoid() },
+      totalPrice,
+    };
+  }
+);
+
+export const removeIngredientWithPrice = createAsyncThunk(
+  'order/removeIngredientWithPrice',
+  (uniqueId: string, { getState }) => {
+    const state = getState() as { order: OrderState };
+
+    const newIngredients = state.order.ingredients.filter(
+      (ingredient) => ingredient.uniqueId !== uniqueId
+    );
+
+    const totalPrice = calculateTotalPrice(state.order.bun, newIngredients);
+
+    return { uniqueId, totalPrice };
+  }
+);
+
 const orderSlice = createSlice({
   name: 'order',
   initialState,
   reducers: {
-    addIngredient: (state, action: PayloadAction<TIngredient>) => {
-      const ingredient = action.payload;
-
-      if (ingredient.type === 'bun') {
-        state.bun = ingredient;
-      } else {
-        const orderIngredient: TOrderIngredient = {
-          ...ingredient,
-          uniqueId: nanoid(),
-        };
-        state.ingredients.push(orderIngredient);
-      }
-
-      state.totalPrice = calculateTotalPrice(state.bun, state.ingredients);
-    },
-
-    removeIngredient: (state, action: PayloadAction<string>) => {
-      const uniqueId = action.payload;
-      state.ingredients = state.ingredients.filter(
-        (ingredient) => ingredient.uniqueId !== uniqueId
-      );
-      state.totalPrice = calculateTotalPrice(state.bun, state.ingredients);
-    },
-
     moveIngredient: (
       state,
       action: PayloadAction<{ dragIndex: number; hoverIndex: number }>
@@ -141,6 +134,24 @@ const orderSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
+      .addCase(addIngredientWithPrice.fulfilled, (state, action) => {
+        const { ingredient, totalPrice } = action.payload;
+
+        if (ingredient.type === 'bun') {
+          state.bun = ingredient;
+        } else {
+          state.ingredients.push(ingredient as TOrderIngredient);
+        }
+
+        state.totalPrice = totalPrice;
+      })
+      .addCase(removeIngredientWithPrice.fulfilled, (state, action) => {
+        const { uniqueId, totalPrice } = action.payload;
+        state.ingredients = state.ingredients.filter(
+          (ingredient) => ingredient.uniqueId !== uniqueId
+        );
+        state.totalPrice = totalPrice;
+      })
       .addCase(createOrder.pending, (state) => {
         state.orderRequest.loading = true;
         state.orderRequest.error = null;
@@ -166,11 +177,10 @@ const orderSlice = createSlice({
   },
 });
 
-export const {
-  addIngredient,
-  removeIngredient,
-  moveIngredient,
-  clearOrder,
-  clearOrderRequest,
-} = orderSlice.actions;
+export {
+  addIngredientWithPrice as addIngredient,
+  removeIngredientWithPrice as removeIngredient,
+};
+
+export const { moveIngredient, clearOrder, clearOrderRequest } = orderSlice.actions;
 export default orderSlice.reducer;

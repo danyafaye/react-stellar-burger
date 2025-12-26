@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice, type PayloadAction } from '@reduxjs/toolkit';
 
-import { baseUrl } from '@utils/constants.ts';
+import { apiRequest, handleApiError } from '@services/rest.ts';
 
 import type { ResponseType, TIngredient } from '@utils/types.ts';
 
@@ -8,32 +8,10 @@ export const fetchIngredients = createAsyncThunk(
   'ingredients/fetchIngredients',
   async (_, { rejectWithValue }) => {
     try {
-      const response = await fetch(`${baseUrl}/ingredients`);
-
-      if (!response.ok) {
-        const errorMessage = `Ошибка ${response.status}: ${response.statusText}`;
-        return rejectWithValue(errorMessage);
-      }
-
-      const data = (await response.json()) as ResponseType<TIngredient>;
-
-      if (!data.success) {
-        return rejectWithValue('API вернул неуспешный ответ');
-      }
-
+      const data = await apiRequest<ResponseType<TIngredient>>('/ingredients');
       return data.data;
     } catch (error) {
-      if (error instanceof TypeError) {
-        return rejectWithValue('Ошибка сети: проверьте подключение к интернету');
-      }
-
-      if (error instanceof SyntaxError) {
-        return rejectWithValue('Ошибка парсинга данных от сервера');
-      }
-
-      const errorMessage =
-        error instanceof Error ? error.message : 'Произошла неизвестная ошибка';
-      return rejectWithValue(errorMessage);
+      return rejectWithValue(handleApiError(error));
     }
   }
 );

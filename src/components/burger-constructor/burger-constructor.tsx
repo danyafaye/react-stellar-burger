@@ -43,7 +43,7 @@ export const BurgerConstructor: FC = () => {
   const [_, drop] = useDrop<TIngredient, void, void>({
     accept: DND_TYPES.INGREDIENT,
     drop: (ingredient: TIngredient) => {
-      dispatch(addIngredient(ingredient));
+      void dispatch(addIngredient(ingredient));
     },
   });
 
@@ -105,9 +105,9 @@ export const BurgerConstructor: FC = () => {
               />
             ))
           ) : (
-            <li className={styles.ingredients_placeholder}>
+            <div className={styles.ingredients_placeholder}>
               <span className="text text_type_main-default">Выберите начинку</span>
-            </li>
+            </div>
           )}
         </li>
 
