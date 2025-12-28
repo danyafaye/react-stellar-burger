@@ -1,0 +1,19 @@
+.constructor_item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: opacity 0.2s ease;
+}
+
+.dragging {
+  opacity: 0.3;
+}
+
+.drag_icon {
+  cursor: grabbing;
+}
+
+.drag_icon:active,
+.drag_icon:focus {
+  cursor: grabbing;
+}

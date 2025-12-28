@@ -1,9 +1,11 @@
 import { Counter, CurrencyIcon } from '@krgaa/react-developer-burger-ui-components';
+import { type FC, useRef } from 'react';
+import { useDrag } from 'react-dnd';
 
 import { Image } from '@components/image/image.tsx';
+import { DND_TYPES } from '@utils/constants.ts';
 
 import type { TIngredient } from '@utils/types.ts';
-import type { FC } from 'react';
 
 import styles from './ingredient-item.module.css';
 
@@ -13,9 +15,29 @@ type IngredientItemProps = {
   count: number;
 };
 
+type DragCollectedProps = {
+  isDragging: boolean;
+};
+
 const IngredientItem: FC<IngredientItemProps> = ({ ingredient, onClick, count }) => {
+  const dragRef = useRef<HTMLLIElement>(null);
+
+  const [{ isDragging }, drag] = useDrag<TIngredient, void, DragCollectedProps>({
+    type: DND_TYPES.INGREDIENT,
+    item: ingredient,
+    collect: (monitor) => ({
+      isDragging: monitor.isDragging(),
+    }),
+  });
+
+  drag(dragRef);
+
   return (
-    <li className={styles.block} onClick={onClick}>
+    <li
+      ref={dragRef}
+      className={`${styles.block} ${isDragging ? styles.dragging : ''}`}
+      onClick={onClick}
+    >
       {count > 0 && <Counter count={count} />}
       <Image
         width={240}
