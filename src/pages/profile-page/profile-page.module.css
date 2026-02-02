@@ -1,0 +1,32 @@
+.profile {
+  display: flex;
+  gap: 60px;
+  width: 1240px;
+  height: 100%;
+  margin: 120px auto 0;
+}
+
+.navContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 80px;
+  width: 320px;
+}
+
+.nav {
+  display: flex;
+  flex-direction: column;
+}
+
+.link {
+  display: flex;
+  align-items: center;
+  height: 64px;
+  color: var(--text-inactive-color);
+  cursor: pointer;
+}
+
+.isActive {
+  color: var(--text-active-color);
+  cursor: default;
+}

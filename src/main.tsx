@@ -1,3 +1,4 @@
+import { AuthProvider } from '@/providers/auth/AuthProvider.tsx';
 import { StrictMode } from 'react';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
@@ -15,7 +16,9 @@ createRoot(document.getElementById('root')!).render(
     <Provider store={store}>
       <DndProvider backend={HTML5Backend}>
         <BrowserRouter>
-          <App />
+          <AuthProvider>
+            <App />
+          </AuthProvider>
         </BrowserRouter>
       </DndProvider>
     </Provider>

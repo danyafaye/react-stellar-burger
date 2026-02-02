@@ -4,8 +4,10 @@ import {
   CurrencyIcon,
   Preloader,
 } from '@krgaa/react-developer-burger-ui-components';
+import { useAuth } from '@providers/auth/AuthContext.ts';
 import { useEffect, useMemo, useRef } from 'react';
 import { useDrop } from 'react-dnd';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 import { DraggableConstructorItem } from '@components/draggable-constructor-item/draggable-constructor-item.tsx';
 import { Modal } from '@components/modal/modal.tsx';
@@ -38,6 +40,9 @@ export const BurgerConstructor: FC = () => {
   const orderError = useAppSelector(selectOrderError);
   const orderLoading = useAppSelector(selectOrderLoading);
   const orderNumber = useAppSelector(selectOrderNumber);
+  const location = useLocation();
+  const { isAuthenticated } = useAuth();
+  const navigate = useNavigate();
   const dropRef = useRef<HTMLElement>(null);
 
   const [_, drop] = useDrop<TIngredient, void, void>({
@@ -60,9 +65,14 @@ export const BurgerConstructor: FC = () => {
   };
 
   const handleOrder = () => {
-    if (canOrder) {
-      void dispatch(createOrder(orderData));
+    if (!canOrder) return;
+
+    if (!isAuthenticated) {
+      void navigate('/login', { state: { from: location } });
+      return;
     }
+
+    void dispatch(createOrder(orderData));
   };
 
   useEffect(() => {

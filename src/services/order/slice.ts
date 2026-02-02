@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice, nanoid } from '@reduxjs/toolkit';
 
-import { apiRequest, handleApiError } from '@services/rest.ts';
+import { fetchWithRefresh, handleApiError } from '@services/rest.ts';
+import { getCookie } from '@utils/cookie.ts';
 
 import type { PayloadAction } from '@reduxjs/toolkit';
 import type { TCreateOrderRequest, TIngredient, TOrder } from '@utils/types.ts';
@@ -13,8 +14,11 @@ export const createOrder = createAsyncThunk(
   'order/createOrder',
   async (orderData: TCreateOrderRequest, { rejectWithValue }) => {
     try {
-      return await apiRequest<TOrder>('/orders', {
+      return await fetchWithRefresh<TOrder>('/orders', {
         method: 'POST',
+        headers: {
+          authorization: getCookie('accessToken') ?? '',
+        },
         body: JSON.stringify(orderData),
       });
     } catch (error) {

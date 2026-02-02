@@ -1,20 +1,13 @@
 import { Preloader, Tab } from '@krgaa/react-developer-burger-ui-components';
 import { useState, type FC, useMemo, useRef, useEffect } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 
-import IngredientDetails from '@components/ingredient-details/ingredient-details.tsx';
 import IngredientItem from '@components/ingredient-item/ingredient-item.tsx';
-import { Modal } from '@components/modal/modal.tsx';
-import { useAppDispatch } from '@hooks/useAppDispatch.ts';
 import { useAppSelector } from '@hooks/useAppSelector.ts';
 import {
-  selectCurrentIngredient,
   selectIngredients,
   selectIngredientsLoading,
 } from '@services/ingredients/selectors.ts';
-import {
-  clearCurrentIngredient,
-  setCurrentIngredient,
-} from '@services/ingredients/slice.ts';
 import { selectIngredientCounts } from '@services/order/selectors.ts';
 
 import type { TIngredient } from '@utils/types.ts';
@@ -24,12 +17,12 @@ import styles from './burger-ingredients.module.css';
 type IngredientType = 'bun' | 'sauce' | 'main';
 
 export const BurgerIngredients: FC = () => {
-  const dispatch = useAppDispatch();
   const [activeTab, setActiveTab] = useState<IngredientType>('bun');
   const ingredients = useAppSelector(selectIngredients);
   const loading = useAppSelector(selectIngredientsLoading);
+  const location = useLocation();
   const ingredientCounts = useAppSelector(selectIngredientCounts);
-  const currentIngredient = useAppSelector(selectCurrentIngredient);
+  const navigate = useNavigate();
 
   const bunsRef = useRef<HTMLDivElement>(null);
   const saucesRef = useRef<HTMLDivElement>(null);
@@ -74,11 +67,7 @@ export const BurgerIngredients: FC = () => {
   }, [loading, ingredients.length]);
 
   const handleIngredientClick = (ingredient: TIngredient) => {
-    dispatch(setCurrentIngredient(ingredient));
-  };
-
-  const handleCloseModal = () => {
-    dispatch(clearCurrentIngredient());
+    void navigate(`/ingredients/${ingredient._id}`, { state: { background: location } });
   };
 
   const renderBuns = useMemo(() => {
@@ -159,11 +148,6 @@ export const BurgerIngredients: FC = () => {
 
   return (
     <section className={styles.burger_ingredients}>
-      {currentIngredient && (
-        <Modal onClose={handleCloseModal} title="Детали ингредиента">
-          <IngredientDetails />
-        </Modal>
-      )}
       <nav>
         <ul className={styles.menu}>
           <Tab
