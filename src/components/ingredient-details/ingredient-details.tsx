@@ -1,17 +1,23 @@
+import { useParams } from 'react-router-dom';
+
 import { Image } from '@components/image/image.tsx';
 import { useAppSelector } from '@hooks/useAppSelector.ts';
-import { selectCurrentIngredient } from '@services/ingredients/selectors.ts';
+import { selectIngredients } from '@services/ingredients/selectors.ts';
 
 import type { FC } from 'react';
 
 import styles from './ingredient-details.module.css';
 
 const IngredientDetails: FC = () => {
-  const ingredient = useAppSelector(selectCurrentIngredient);
+  const { id } = useParams<{ id: string }>();
+  const ingredients = useAppSelector(selectIngredients);
+
+  const ingredient = ingredients.find((item) => item._id === id);
 
   if (!ingredient) {
     return null;
   }
+
   return (
     <section className={styles.container}>
       <Image
