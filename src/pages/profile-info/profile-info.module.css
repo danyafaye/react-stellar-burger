@@ -3,6 +3,7 @@
   flex-direction: column;
   gap: 24px;
   max-width: 480px;
+  margin-top: 84px;
 }
 
 .action {

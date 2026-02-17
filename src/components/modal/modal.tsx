@@ -29,10 +29,14 @@ export const Modal: FC<ModalProps> = ({ onClose, title, children }) => {
     <Portal id="modal-root">
       <section className={styles.modal_container}>
         <ModalOverlay onClose={onClose} />
-        <div className={`${styles.modal} p-10 pb-15`}>
+        <div className={`${styles.modal} p-10`}>
           <CloseIcon className={styles.close_icon} type="primary" onClick={onClose} />
 
-          <h1 className={`${styles.modal_title} text text_type_main-large`}>{title}</h1>
+          {title && (
+            <h1 className={`${styles.modal_title} text text_type_main-large`}>
+              {title}
+            </h1>
+          )}
 
           {children}
         </div>

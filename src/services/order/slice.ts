@@ -4,7 +4,13 @@ import { fetchWithRefresh, handleApiError } from '@services/rest.ts';
 import { getCookie } from '@utils/cookie.ts';
 
 import type { PayloadAction } from '@reduxjs/toolkit';
-import type { TCreateOrderRequest, TIngredient, TOrder } from '@utils/types.ts';
+import type {
+  TCreateOrderRequest,
+  TIngredient,
+  TOrder,
+  TWSOrder,
+  TWSResponse,
+} from '@utils/types.ts';
 
 export type TOrderIngredient = TIngredient & {
   uniqueId: string;
@@ -37,6 +43,11 @@ type OrderState = {
     orderNumber: number | null;
     orderName: string | null;
   };
+  orders: TWSOrder[];
+  total: number;
+  totalToday: number;
+  wsConnected: boolean;
+  wsError: string | null;
 };
 
 const initialState: OrderState = {
@@ -49,6 +60,11 @@ const initialState: OrderState = {
     orderNumber: null,
     orderName: null,
   },
+  orders: [],
+  total: 0,
+  totalToday: 0,
+  wsConnected: false,
+  wsError: null,
 };
 
 const calculateTotalPrice = (
@@ -106,7 +122,7 @@ export const removeIngredientWithPrice = createAsyncThunk(
   }
 );
 
-const orderSlice = createSlice({
+export const orderSlice = createSlice({
   name: 'order',
   initialState,
   reducers: {
@@ -134,6 +150,28 @@ const orderSlice = createSlice({
         orderNumber: null,
         orderName: null,
       };
+    },
+    wsConnectionSuccess: (state) => {
+      state.wsConnected = true;
+      state.wsError = null;
+    },
+    wsConnectionError: (state, action: PayloadAction<string>) => {
+      state.wsConnected = false;
+      state.wsError = action.payload;
+    },
+    wsConnectionClosed: (state) => {
+      state.wsConnected = false;
+    },
+    wsGetOrders: (state, action: PayloadAction<TWSResponse>) => {
+      state.orders = action.payload.orders;
+      state.total = action.payload.total;
+      state.totalToday = action.payload.totalToday;
+    },
+    wsInit: (_state, _action: PayloadAction<string>) => {
+      /* empty */
+    },
+    wsClose: (_state) => {
+      /* empty */
     },
   },
   extraReducers: (builder) => {

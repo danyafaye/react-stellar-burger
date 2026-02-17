@@ -29,3 +29,38 @@ export type TOrder = {
 export type TCreateOrderRequest = {
   ingredients: string[];
 };
+
+export type TWSOrder = {
+  ingredients: string[];
+  _id: string;
+  status: 'created' | 'pending' | 'done';
+  number: number;
+  createdAt: string;
+  updatedAt: string;
+  name: string;
+};
+
+export type TWSResponse = {
+  success: boolean;
+  orders: TWSOrder[];
+  total: number;
+  totalToday: number;
+};
+
+export type TOrderIngredients = {
+  imgSrc: string;
+  id: string;
+  name: string;
+  price: number;
+  count: number;
+  uniqueId: string;
+};
+
+export type TOrderInfo = {
+  number: number;
+  date: string;
+  name: string;
+  cost: number;
+  status: TWSOrder['status'];
+  ingredients: TOrderIngredients[];
+};

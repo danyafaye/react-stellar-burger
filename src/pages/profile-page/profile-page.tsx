@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 
 import { useAppDispatch } from '@hooks/useAppDispatch.ts';
@@ -17,6 +18,17 @@ export const ProfilePage = () => {
   const handleLogout = () => {
     void dispatch(logoutUser());
   };
+
+  const renderDescription = useMemo(() => {
+    switch (location.pathname) {
+      case '/profile':
+        return 'В этом разделе вы можете изменить свои персональные данные';
+      case '/profile/orders':
+        return 'В этом разделе вы можете просмотреть свою историю заказов';
+      default:
+        return '';
+    }
+  }, [location.pathname]);
 
   return (
     <section className={styles.profile}>
@@ -44,7 +56,7 @@ export const ProfilePage = () => {
           </ul>
         </nav>
         <span className="text text_type_main-default text_color_inactive">
-          В этом разделе вы можете изменить свои персональные данные
+          {renderDescription}
         </span>
       </div>
       <Outlet />
