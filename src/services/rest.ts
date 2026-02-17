@@ -1,4 +1,4 @@
-import { baseUrl } from '@utils/constants.ts';
+import { BASE_URL } from '@utils/constants.ts';
 import { setCookie } from '@utils/cookie.ts';
 
 export type TServerResponse<T> = T & {
@@ -22,7 +22,7 @@ export const apiRequest = async <T>(
 ): Promise<TServerResponse<T>> => {
   const { headers, ...restOptions } = options;
 
-  const response = await fetch(`${baseUrl}${endpoint}`, {
+  const response = await fetch(`${BASE_URL}${endpoint}`, {
     ...restOptions,
     headers: {
       'Content-Type': 'application/json',

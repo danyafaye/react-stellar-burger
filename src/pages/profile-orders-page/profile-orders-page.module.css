@@ -1,0 +1,12 @@
+.container {
+  max-width: 872px;
+  padding: 8px 8px 0;
+  overflow-y: auto;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  overflow-y: auto;
+}

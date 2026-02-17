@@ -1,0 +1,75 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  background-color: var(--background);
+  border: 1px solid transparent;
+  border-radius: 40px;
+  cursor: pointer;
+  transition: border-color 150ms ease-in-out;
+}
+
+.container:hover {
+  border: 1px solid var(--text-inactive-color);
+}
+
+.orderInfo {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+}
+
+.orderPrice {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ingredients {
+  display: flex;
+  align-items: center;
+}
+
+.ingredientsBlock {
+  display: flex;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.ingredient {
+  position: relative;
+  width: 64px;
+  height: 64px;
+  padding: 4px;
+  background-color: var(--background-alt);
+  background-image:
+    linear-gradient(var(--background), var(--background)),
+    linear-gradient(63.18deg, #801ab3 0%, #4c4cff 100%);
+  background-clip: padding-box, border-box;
+  background-origin: border-box;
+  border: 2px solid transparent;
+  border-radius: 100px;
+  object-fit: cover;
+}
+
+.nameInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.ingredient:nth-child(n + 2) {
+  transform: translateX(-10px);
+}
+
+.restNumber {
+  position: absolute;
+}
+
+.ingredientWrapper {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

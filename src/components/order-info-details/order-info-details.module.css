@@ -1,0 +1,70 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  max-width: 640px;
+  margin-right: auto;
+  margin-left: auto;
+  overflow: hidden;
+}
+
+.title {
+  line-height: 64px;
+}
+
+.info {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.ingredients {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-height: 304px;
+  overflow-y: auto;
+}
+
+.ingredient {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.image {
+  position: relative;
+  width: 64px;
+  height: 64px;
+  padding: 4px;
+  background-color: var(--background-alt);
+  background-image:
+    linear-gradient(var(--background), var(--background)),
+    linear-gradient(63.18deg, #801ab3 0%, #4c4cff 100%);
+  background-clip: padding-box, border-box;
+  background-origin: border-box;
+  border: 2px solid transparent;
+  border-radius: 100px;
+  object-fit: cover;
+}
+
+.footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+
+.cost {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.titleCenter {
+  text-align: center;
+}
+
+.ingredientName {
+  flex: 1;
+}
