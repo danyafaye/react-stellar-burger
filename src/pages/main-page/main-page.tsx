@@ -6,7 +6,7 @@ import styles from './main-page.module.css';
 export const MainPage = () => {
   return (
     <>
-      <h1 className={`${styles.title} text text_type_main-large mt-10 mb-5 pl-5`}>
+      <h1 className={`${styles.title} text_type_main-large mt-10 mb-5 pl-5`}>
         Соберите бургер
       </h1>
       <main className={styles.main}>
