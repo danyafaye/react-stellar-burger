@@ -1,5 +1,6 @@
 # Стартер на TypeScript для проекта Stellar Burger
 
+Ссылка на проект: [react-stellar-burger](https://danyafaye.github.io/react-stellar-burger/)
 
 ## Процедура создания коммита с проверками
 
