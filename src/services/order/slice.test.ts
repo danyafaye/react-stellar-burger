@@ -11,26 +11,10 @@ import reducer, {
   addIngredient,
   removeIngredient,
   createOrder,
+  initialState,
 } from './slice';
 
 import type { TIngredient } from '@utils/types';
-
-const initialState = {
-  bun: null,
-  ingredients: [],
-  totalPrice: 0,
-  orderRequest: {
-    loading: false,
-    error: null,
-    orderNumber: null,
-    orderName: null,
-  },
-  orders: [],
-  total: 0,
-  totalToday: 0,
-  wsConnected: false,
-  wsError: null,
-};
 
 const mockBun: TIngredient = {
   _id: '1',

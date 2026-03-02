@@ -50,7 +50,7 @@ type OrderState = {
   wsError: string | null;
 };
 
-const initialState: OrderState = {
+export const initialState: OrderState = {
   bun: null,
   ingredients: [],
   totalPrice: 0,

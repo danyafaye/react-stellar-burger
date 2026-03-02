@@ -8,17 +8,8 @@ import reducer, {
   updateUser,
   getUser,
   logoutUser,
+  initialState,
 } from './slice';
-
-const initialState = {
-  user: null,
-  isAuthenticated: false,
-  isAuthChecked: false,
-  loginIsLoading: false,
-  registerIsLoading: false,
-  getUserIsLoading: false,
-  updateUserIsLoading: false,
-};
 
 const mockUser = {
   email: 'test@test.com',
