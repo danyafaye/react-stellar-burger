@@ -82,7 +82,11 @@ export const BurgerConstructor: FC = () => {
   }, [orderError]);
 
   return (
-    <section className={`${styles.burger_constructor} pr-4 pl-4 pb-5`} ref={dropRef}>
+    <section
+      className={`${styles.burger_constructor} pr-4 pl-4 pb-5`}
+      ref={dropRef}
+      data-cy="burger-constructor"
+    >
       {showOrderModal && orderNumber && (
         <Modal onClose={closeOrderDetails}>
           <OrderDetails orderId={orderNumber} />
@@ -147,6 +151,7 @@ export const BurgerConstructor: FC = () => {
           htmlType="submit"
           disabled={!canOrder || orderLoading}
           onClick={handleOrder}
+          data-cy="order-button"
         >
           {orderLoading ? <Preloader /> : 'Оформить заказ'}
         </Button>

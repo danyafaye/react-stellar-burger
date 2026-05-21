@@ -37,6 +37,7 @@ const IngredientItem: FC<IngredientItemProps> = ({ ingredient, onClick, count })
       ref={dragRef}
       className={`${styles.block} ${isDragging ? styles.dragging : ''}`}
       onClick={onClick}
+      data-cy={`ingredient-${ingredient._id}`}
     >
       {count > 0 && <Counter count={count} />}
       <Image

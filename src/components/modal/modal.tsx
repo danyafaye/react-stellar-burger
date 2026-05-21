@@ -29,8 +29,10 @@ export const Modal: FC<ModalProps> = ({ onClose, title, children }) => {
     <Portal id="modal-root">
       <section className={styles.modal_container}>
         <ModalOverlay onClose={onClose} />
-        <div className={`${styles.modal} p-10`}>
-          <CloseIcon className={styles.close_icon} type="primary" onClick={onClose} />
+        <div className={`${styles.modal} p-10`} data-cy="modal">
+          <div className={styles.close_icon} data-cy="modal-close-button">
+            <CloseIcon type="primary" onClick={onClose} />
+          </div>
 
           {title && (
             <h1 className={`${styles.modal_title} text text_type_main-large`}>

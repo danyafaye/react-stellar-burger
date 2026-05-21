@@ -50,7 +50,7 @@ type OrderState = {
   wsError: string | null;
 };
 
-const initialState: OrderState = {
+export const initialState: OrderState = {
   bun: null,
   ingredients: [],
   totalPrice: 0,
@@ -224,5 +224,15 @@ export {
   removeIngredientWithPrice as removeIngredient,
 };
 
-export const { moveIngredient, clearOrder, clearOrderRequest } = orderSlice.actions;
+export const {
+  moveIngredient,
+  clearOrder,
+  clearOrderRequest,
+  wsConnectionSuccess,
+  wsConnectionError,
+  wsConnectionClosed,
+  wsGetOrders,
+  wsInit,
+  wsClose,
+} = orderSlice.actions;
 export default orderSlice.reducer;
